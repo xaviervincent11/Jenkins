@@ -10,25 +10,31 @@ pipeline {
     stages {
         stage('Local Setup') {
             steps {
+                echo "[Local Setup] START - ${new Date()}"
                 echo "Initialisation sur Mac M3..."
                 sleep(time: 6, unit: 'SECONDS')
+                echo "[Local Setup] END - ${new Date()}"
             }
         }
         
         // On appelle le template qui contient nos 4 stages
         stage('App Stages') {
             steps {
+                echo "[App Stages] START - ${new Date()}"
                 script {
                     standardDeploy(appName: 'MyM3App')
                 }
                 sleep(time: 3, unit: 'SECONDS')
+                echo "[App Stages] END - ${new Date()}"
             }
         }
 
         stage('Final Notification') {
             steps {
+                echo "[Final Notification] START - ${new Date()}"
                 echo "Pipeline terminé avec succès !"
                 sleep(time: 5, unit: 'SECONDS')
+                echo "[Final Notification] END - ${new Date()}"
             }
         }
     }
