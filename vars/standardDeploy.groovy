@@ -1,4 +1,6 @@
-idef call(Map config = [:]) {
+// vars/standardDeploy.groovy
+
+def call(Map config = [:]) {
     pipeline {
         agent any
         parameters {
@@ -8,6 +10,7 @@ idef call(Map config = [:]) {
         stages {
             stage('Deploy') {
                 steps {
+                    // We use config.appName to access the variable passed from the Jenkinsfile
                     echo "Deploying ${config.appName} version ${params.VERSION} to ${params.ENVIRONMENT}"
                 }
             }
