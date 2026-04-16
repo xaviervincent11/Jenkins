@@ -17,7 +17,9 @@ pipeline {
         // On appelle le template qui contient nos 4 stages
         stage('App Stages') {
             steps {
-                standardDeploy(appName: 'MyM3App')
+                script {
+                    standardDeploy(appName: 'MyM3App')
+                }
             }
         }
 
