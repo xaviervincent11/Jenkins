@@ -11,6 +11,7 @@ pipeline {
         stage('Local Setup') {
             steps {
                 echo "Initialisation sur Mac M3..."
+                sleep(time: 6, unit: 'SECONDS')
             }
         }
         
@@ -20,12 +21,14 @@ pipeline {
                 script {
                     standardDeploy(appName: 'MyM3App')
                 }
+                sleep(time: 3, unit: 'SECONDS')
             }
         }
 
         stage('Final Notification') {
             steps {
                 echo "Pipeline terminé avec succès !"
+                sleep(time: 5, unit: 'SECONDS')
             }
         }
     }
