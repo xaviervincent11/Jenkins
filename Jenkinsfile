@@ -2,16 +2,28 @@
 
 pipeline {
     agent any
+    
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['Dev', 'Staging', 'Prod'], description: 'Target')
+    }
+
     stages {
-        stage('Local Initial Check') {
+        stage('Local Setup') {
             steps {
-                echo "Vérification locale sur mon Mac M3..."
+                echo "Initialisation sur Mac M3..."
             }
         }
-        stage('Main Pipeline') {
+        
+        // On appelle le template qui contient nos 4 stages
+        stage('App Stages') {
             steps {
-                // On appelle le template ici
                 standardDeploy(appName: 'MyM3App')
+            }
+        }
+
+        stage('Final Notification') {
+            steps {
+                echo "Pipeline terminé avec succès !"
             }
         }
     }
