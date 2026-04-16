@@ -15,7 +15,7 @@ pipeline {
                 echo "[Local Setup] START - ${new Date()}"
                 echo "[Local Setup] Parameters: ENVIRONMENT=${params.ENVIRONMENT}, APP_VERSION=${params.APP_VERSION}, DRY_RUN=${params.DRY_RUN}"
                 echo "Initialisation sur Mac M3..."
-                sleep(time: 6, unit: 'SECONDS')
+                sleep(time: 4, unit: 'SECONDS')
                 echo "[Local Setup] END - ${new Date()}"
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 echo "[Final Notification] START - ${new Date()}"
                 echo "Pipeline terminé avec succès !"
-                sleep(time: 5, unit: 'SECONDS')
+                sleep(time: 4, unit: 'SECONDS')
                 echo "[Final Notification] END - ${new Date()}"
             }
         }
