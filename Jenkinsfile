@@ -5,12 +5,15 @@ pipeline {
     
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['Dev', 'Staging', 'Prod'], description: 'Target')
+        string(name: 'APP_VERSION', defaultValue: 'latest', description: 'Application version/tag to deploy')
+        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Simulate deployment without applying changes')
     }
 
     stages {
         stage('Local Setup') {
             steps {
                 echo "[Local Setup] START - ${new Date()}"
+                echo "[Local Setup] Parameters: ENVIRONMENT=${params.ENVIRONMENT}, APP_VERSION=${params.APP_VERSION}, DRY_RUN=${params.DRY_RUN}"
                 echo "Initialisation sur Mac M3..."
                 sleep(time: 6, unit: 'SECONDS')
                 echo "[Local Setup] END - ${new Date()}"
