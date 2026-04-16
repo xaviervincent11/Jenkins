@@ -21,6 +21,9 @@ def call(Map config = [:]) {
     }
     stage('Deploy') {
         echo "[Deploy] START - ${new Date()}"
+        echo "[Deploy] Waiting for manual approval..."
+        input message: "Approve deployment of ${config.appName}:${params.APP_VERSION} to ${params.ENVIRONMENT}?", ok: 'Yes'
+        echo "[Deploy] Approval received. Continuing deployment stage."
         if (params.DRY_RUN) {
             echo "[Deploy] DRY RUN enabled - no deployment changes will be applied to ${params.ENVIRONMENT}."
         } else {
