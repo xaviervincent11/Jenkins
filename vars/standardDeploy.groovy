@@ -21,7 +21,11 @@ def call(Map config = [:]) {
     }
     stage('Deploy') {
         echo "[Deploy] START - ${new Date()}"
-        echo "Deploying to ${params.ENVIRONMENT}..."
+        if (params.DRY_RUN) {
+            echo "[Deploy] DRY RUN enabled - no deployment changes will be applied to ${params.ENVIRONMENT}."
+        } else {
+            echo "Deploying ${config.appName}:${params.APP_VERSION} to ${params.ENVIRONMENT}..."
+        }
         sleep(time: 3, unit: 'SECONDS')
         echo "[Deploy] END - ${new Date()}"
     }
