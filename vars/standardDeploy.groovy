@@ -26,14 +26,14 @@ def call(Map config = [:]) {
     stage('Deploy') {
         echo "[Deploy] START - ${new Date()}"
         echo "[Deploy] Waiting for manual approval..."
-        input message: "Approve deployment of ${config.appName}:${params.APP_VERSION} to ${params.ENVIRONMENT}?", ok: 'Yes'
-        echo "[Deploy] Approval received. Continuing deployment stage."
-        if (params.DRY_RUN) {
-            echo "[Deploy] DRY RUN enabled - no deployment changes will be applied to ${params.ENVIRONMENT}."
-            sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION} --dry-run --debug"
-        } else {
-            sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION}"
-        }
+        // input message: "Approve deployment of ${config.appName}:${params.APP_VERSION} to ${params.ENVIRONMENT}?", ok: 'Yes'
+        // echo "[Deploy] Approval received. Continuing deployment stage."
+        // if (params.DRY_RUN) {
+        //     echo "[Deploy] DRY RUN enabled - no deployment changes will be applied to ${params.ENVIRONMENT}."
+        //     sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION} --dry-run --debug"
+        // } else {
+        //     sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION}"
+        // }
         echo "[Deploy] END - ${new Date()}"
     }
 }
