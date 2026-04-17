@@ -9,6 +9,16 @@ docker run -p 8080:8080 -p 50000:50000 -d \
   my-jenkins
 ```
 
+## Helm templates demo
+
+```bash
+helm lint ./helm-templates-demo
+helm template demo ./helm-templates-demo
+
+# Try conditional rendering
+helm template demo ./helm-templates-demo --set ingress.enabled=false --set autoscaling.enabled=false
+```
+
 
 
 

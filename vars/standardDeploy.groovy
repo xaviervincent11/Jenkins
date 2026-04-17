@@ -1,22 +1,26 @@
 // vars/standardDeploy.groovy
 def call(Map config = [:]) {
+    String chartPath = config.chartPath ?: './helm-templates-demo'
+    String releaseName = config.releaseName ?: config.appName?.toLowerCase()?.replaceAll(/[^a-z0-9-]/, '-')
+    String envName = params.ENVIRONMENT.toString().toLowerCase()
+    String namespace = config.namespace ?: "${envName}"
+
     // Note : On n'écrit PAS "pipeline {}" ici
     stage('Build') {
         echo "[Build] START - ${new Date()}"
-        echo "Building ${config.appName}..."
-        sleep(time: 2, unit: 'SECONDS')
+        sh 'helm version --short'
+        sh "helm lint ${chartPath}"
         echo "[Build] END - ${new Date()}"
     }
     stage('Test') {
         echo "[Test] START - ${new Date()}"
-        echo "Testing..."
-        sleep(time: 2, unit: 'SECONDS')
+        sh "helm template ${releaseName}-${envName} ${chartPath} --set image.tag=${params.APP_VERSION} > rendered-${envName}.yaml"
+        sh "wc -l rendered-${envName}.yaml"
         echo "[Test] END - ${new Date()}"
     }
     stage('Security') {
         echo "[Security] START - ${new Date()}"
-        echo "Scanning..."
-        sleep(time: 2, unit: 'SECONDS')
+        echo "[Security] Placeholder: integrate chart security checks (e.g. Trivy/Checkov)"
         echo "[Security] END - ${new Date()}"
     }
     stage('Deploy') {
@@ -26,10 +30,10 @@ def call(Map config = [:]) {
         echo "[Deploy] Approval received. Continuing deployment stage."
         if (params.DRY_RUN) {
             echo "[Deploy] DRY RUN enabled - no deployment changes will be applied to ${params.ENVIRONMENT}."
+            sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION} --dry-run --debug"
         } else {
-            echo "Deploying ${config.appName}:${params.APP_VERSION} to ${params.ENVIRONMENT}..."
+            sh "helm upgrade --install ${releaseName}-${envName} ${chartPath} --namespace ${namespace} --create-namespace --set image.tag=${params.APP_VERSION}"
         }
-        sleep(time: 2, unit: 'SECONDS')
         echo "[Deploy] END - ${new Date()}"
     }
 }

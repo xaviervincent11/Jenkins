@@ -25,7 +25,11 @@ pipeline {
             steps {
                 echo "[App Stages] START - ${new Date()}"
                 script {
-                    standardDeploy(appName: 'MyM3App')
+                    standardDeploy(
+                        appName: 'MyM3App',
+                        releaseName: 'helm-templates-demo',
+                        chartPath: './helm-templates-demo'
+                    )
                 }
                 sleep(time: 3, unit: 'SECONDS')
                 echo "[App Stages] END - ${new Date()}"

@@ -1,0 +1,151 @@
+---
+# Source: helm-templates-demo/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-helm-templates-demo
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: helm-templates-demo/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-helm-templates-demo-env
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  app.properties: |
+    APP_NAME=helm-templates-demo
+    RELEASE=demo
+    ENVIRONMENT=dev
+---
+# Source: helm-templates-demo/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-helm-templates-demo
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+---
+# Source: helm-templates-demo/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-helm-templates-demo
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: helm-templates-demo
+      app.kubernetes.io/instance: demo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: helm-templates-demo
+        app.kubernetes.io/instance: demo
+        tier: web
+      annotations:
+        owner: devops-team
+    spec:
+      serviceAccountName: demo-helm-templates-demo
+      containers:
+        - name: app
+          image: "nginx:1.0.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: FEATURE_FLAG_X
+              value: "true"
+            - name: LOG_LEVEL
+              value: "info"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+---
+# Source: helm-templates-demo/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: demo-helm-templates-demo
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-helm-templates-demo
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+# Source: helm-templates-demo/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-helm-templates-demo
+  labels:
+    helm.sh/chart: helm-templates-demo-0.1.0
+    app.kubernetes.io/name: helm-templates-demo
+    app.kubernetes.io/instance: demo
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "demo.local"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-helm-templates-demo
+                port:
+                  number: 80
