@@ -4,6 +4,12 @@ USER root
 
 ARG HELM_VERSION=v4.1.4
 
+ENV LANG=en_US.UTF-8 \
+	LANGUAGE=en_US:en \
+	LC_ALL=en_US.UTF-8 \
+	JAVA_OPTS="-Duser.language=en -Duser.country=US" \
+	JENKINS_JAVA_OPTS="-Dorg.jenkinsci.plugins.locale.ignoreAcceptLanguage=true -Dorg.jenkinsci.plugins.locale.locale=en_US"
+
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends ca-certificates curl tar \
 	&& rm -rf /var/lib/apt/lists/*
